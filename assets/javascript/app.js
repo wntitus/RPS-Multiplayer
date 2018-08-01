@@ -5,29 +5,19 @@
 
     let name = "";
 
-    sessionStorage.setItem("playerJoined", "no");
 
-    let joined = sessionStorage.getItem("playerJoined");
+    let rockBtn = $("<button type = 'button' class = 'rockBtn'>");
+    let paperBtn = $("<button type = 'button' class = 'paperBtn'>");
+    let scissorsBtn = $("<button type = 'button' class = 'scissorsBtn'>");
 
-    database.ref().once("value", function(snapshot) {
-        if (joined == "no" && snapshot.child("players/one/").exists() == true && snapshot.child("players/two/").exists() == true) {
-            console.log("ONE DISCONNECT");
-            database.ref("players/one/").remove();
-            $("#playerOneName").text("Waiting for Player One");
-        } else if (joined == "no" && snapshot.child("players/two/").exists() == true) {
-            console.log("TWO DISCONNECT");
-            database.ref("players/two/").remove();
-            $("#playerTwoName").text("Waiting for Player Two");
-        }
-    })
-
-
+    let playersFull = false;
 
 
     $(".submitName").on("click", function () {
         event.preventDefault();
 
         name = $("#userName").val().trim();
+
 
         database.ref().once("value", function(snapshot) {
             if (snapshot.child("players/one/").exists() == false) {
@@ -38,7 +28,7 @@
                             losses: 0,
                         }
                 })
-                sessionStorage.setItem("playerJoined", "yes");
+                database.ref("players/one/").onDisconnect().remove();
             } else {
                 database.ref('players/').update({
                         two : {
@@ -47,50 +37,52 @@
                             losses: 0,
                         }
                     })
-                    sessionStorage.setItem("playerJoined", "yes");
+                    database.ref("players/two/").onDisconnect().remove();
                 
             }
 
-
         });
 
-
-        $("#userName").val("");
-
-
-        $("#userName").detach();
-        $(".submitName").detach();
+        $("form").detach();
 
     });
-
-    database.ref('players/one').on("value", function(snapshot) {
-        $("#playerOneName").text(snapshot.val().name);
-    }, function(errorObject) {
-        console.log(errorObject.code);
-    
+    database.ref("players/one/name").on("value", function(snap) {
+        $("#playerOneName").text(snap.val());
+    })
+    database.ref("players/one/wins").on("value", function(snap) {
+        $("#playerOneWins").text(snap.val());
+    })
+    database.ref("players/one/losses").on("value", function(snap) {
+        $("#playerOneLosses").text(snap.val());
+    })
+    database.ref("players/two/name").on("value", function(snap) {
+        $("#playerTwoName").text(snap.val());
+    })
+    database.ref("players/two/wins").on("value", function(snap) {
+        $("#playerTwoWins").text(snap.val());
+    })
+    database.ref("players/two/losses").on("value", function(snap) {
+        $("#playerTwoLosses").text(snap.val());
     })
 
-    database.ref('players/two').on("value", function(snapshot) {
-        $("#playerTwoName").text(snapshot.val().name);
-    }, function(errorObject) {
-        console.log(errorObject.code);
-    })
-
-    database.ref('players/').on("value", function(snapshot) {
-        if (snapshot.child("one/").exists() == false) {
-            $("#playerOneName").text("Waiting for Player One");
+    database.ref().on("value", function(snapshot) {
+        if (snapshot.child("players/one/").exists() && snapshot.child("players/two/").exists()) {
+            database.ref().update({
+                turn : 1,
+            })
+            playersFull = true;
+            console.log(playersFull);
         }
-    }, function(errorObject) {
-        console.log("error: " + errorObject.code);
-    })
-
-    database.ref('players/').on("value", function(snapshot) {
-        if (snapshot.child("two/").exists() == false) {
+        if (snapshot.child("players/one/").exists() == false && snapshot.child("players/two/").exists() == false) {
+            $("#playerOneName").text("Waiting for Player One");
             $("#playerTwoName").text("Waiting for Player Two");
         }
-    }, function(errorObject) {
-        console.log("error: " + errorObject.code);
+
     })
+
+
+
+
 
 
 
