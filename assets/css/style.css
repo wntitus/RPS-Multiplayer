@@ -23,3 +23,9 @@ form {
     border: 1.5px solid black;
     float: left;
 }
+
+.oneRock, .onePaper, .oneScissors {
+    display: hidden;
+    height: 15%;
+    width: 75px;
+}
