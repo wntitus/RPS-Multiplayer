@@ -233,40 +233,40 @@
                     }
                 })
             }
+            if (playerOneWin === true && playerTwoLoss === true) {
+                database.ref("players/1").update({
+                    wins : oneWins,
+                })
+                database.ref("players/2").update({
+                    losses : twoLosses,
+                })
+                playerOneWin = false;
+                playerTwoLoss = false;
+                playersFull = false;
+    
+                
+    
+            } else if (playerTwoWin === true && playerOneLoss === true) {
+                database.ref("players/2").update({
+                    wins : twoWins,
+                })
+                database.ref("players/1").update({
+                    losses : oneLosses,
+                })
+                playerTwoWin = false;
+                playerOneLoss = false;
+                playersFull = false;
+            }
 
         })
     })
-    statCheck();      
+   
     }
 
-    function statCheck() {
-        if (playerOneWin === true && playerTwoLoss === true) {
-            database.ref("players/1").update({
-                wins : oneWins,
-            })
-            database.ref("players/2").update({
-                losses : twoLosses,
-            })
-            playerOneWin = false;
-            playerTwoLoss = false;
-            playersFull = false;
-
-            
-
-        } else if (playerTwoWin === true && playerOneLoss === true) {
-            database.ref("players/2").update({
-                wins : twoWins,
-            })
-            database.ref("players/1").update({
-                losses : oneLosses,
-            })
-            playerTwoWin = false;
-            playerOneLoss = false;
-            playersFull = false;
-        }
 
 
-    }
+
+
 
 // WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
 // WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
