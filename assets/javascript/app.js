@@ -77,21 +77,21 @@
     database.ref("players/1/name").on("value", function(snap) {
         $("#playerOneName").text(snap.val());
     });
-    // database.ref("players/1/wins").on("value", function(snap) {
-    //     $("#playerOneWins").text(snap.val());
-    // })
-    // database.ref("players/1/losses").on("value", function(snap) {
-    //     $("#playerOneLosses").text(snap.val());
-    // })
+    database.ref("players/1/wins").on("value", function(snap) {
+        $("#playerOneWins").text(snap.val());
+    })
+    database.ref("players/1/losses").on("value", function(snap) {
+        $("#playerOneLosses").text(snap.val());
+    })
     database.ref("players/2/name").on("value", function(snap) {
         $("#playerTwoName").text(snap.val());
     });
-    // database.ref("players/2/wins").on("value", function(snap) {
-    //     $("#playerTwoWins").text(snap.val());
-    // })
-    // database.ref("players/2/losses").on("value", function(snap) {
-    //     $("#playerTwoLosses").text(snap.val());
-    // })
+    database.ref("players/2/wins").on("value", function(snap) {
+        $("#playerTwoWins").text(snap.val());
+    })
+    database.ref("players/2/losses").on("value", function(snap) {
+        $("#playerTwoLosses").text(snap.val());
+    })
 
     database.ref().on("value", function(snapshot) {
         if (snapshot.child("players/1/").exists() == false && snapshot.child("players/2/").exists() == false) {
@@ -205,40 +205,49 @@
                         oneWins += 1;
                         gameComplete = true;
                         playerOneWin = true;
+                        $("#oneWin").css("display", "inline-block");
                     } else if (snap.child("1/choice").val() === "rock" && snap.child("2/choice").val() === "paper") {
                         console.log("PLAYER TWO WINS");
                         twoWins += 1;
                         gameComplete = true;
                         playerTwoWin = true;
+                        $("#twoWin").css("display", "inline-block");
                     } else if (snap.child("1/choice").val() === "rock" && snap.child("2/choice").val() === "rock") {
                         console.log("TIE");
                         gameComplete = true;
+                        $("#tie").css("display", "inline-block");
                     } else if (snap.child("1/choice").val() === "paper" && snap.child("2/choice").val() === "scissors") {
                         console.log("PLAYER TWO WINS");
                         twoWins += 1;
                         gameComplete = true;
                         playerTwoWin = true;
+                        $("#twoWin").css("display", "inline-block");
                     } else if (snap.child("1/choice").val() === "paper" && snap.child("2/choice").val() === "paper") {
                         console.log("TIE");
                         gameComplete = true;
+                        $("#tie").css("display", "inline-block");
                     } else if (snap.child("1/choice").val() === "paper" && snap.child("2/choice").val() === "rock") {
                         console.log("PLAYER ONE WINS");
                         oneWins += 1;
                         gameComplete = true;
                         playerOneWin = true;
+                        $("#oneWin").css("display", "inline-block");
                     } else if (snap.child("1/choice").val() === "scissors" && snap.child("2/choice").val() === "scissors") {
                         console.log("TIE");
                         gameComplete = true;
+                        $("#tie").css("display", "inline-block");
                     } else if (snap.child("1/choice").val() === "scissors" && snap.child("2/choice").val() === "paper") {
                         console.log("PLAYER ONE WINS");
                         oneWins += 1;
                         gameComplete = true;
                         playerOneWin = true;
+                        $("#oneWin").css("display", "inline-block");
                     } else if (snap.child("1/choice").val() === "scissors" && snap.child("2/choice").val() === "rock") {
                         console.log("PLAYER TWO WINS");
                         twoWins += 1;
                         gameComplete = true;
                         playerTwoWin = true;
+                        $("#twoWin").css("display", "inline-block");
                     }
                 })
             }

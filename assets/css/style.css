@@ -35,3 +35,7 @@ form {
     height: 15%;
     width: 75px;
 }
+
+#oneWin, #twoWin, #tie {
+    display: none;
+}
