@@ -6,3 +6,7 @@
 #personal workspace
 
 rpshw.code-workspace
+
+#secondary js file for testing
+
+/assets/javascript/app2.js

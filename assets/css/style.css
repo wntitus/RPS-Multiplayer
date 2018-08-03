@@ -25,7 +25,13 @@ form {
 }
 
 .oneRock, .onePaper, .oneScissors {
-    display: hidden;
+    display: none;
+    height: 15%;
+    width: 75px;
+}
+
+.twoRock, .twoPaper, .twoScissors {
+    display: none;
     height: 15%;
     width: 75px;
 }

@@ -5,17 +5,30 @@
 
     let name = "";
 
-    let playerOneName = "";
-    let playerTwoName = "";
+    let pOneRock = $("<button type = 'button' class = 'oneRock'>");
+    $(pOneRock).text("ROCK");
+    let pOnePaper = $("<button type = 'button' class = 'onePaper'>");
+    $(pOnePaper).text("PAPER");
+    let pOneScissors = $("<button type = 'button' class = 'oneScissors'>");
+    $(pOneScissors).text("SCISSORS");
 
+    let oneWins = 0;
+    let twoWins = 0;
 
-    let pOneRock = $("<button type = 'button' class = 'oneRock'>ROCK");
-    let pOnePaper = $("<button type = 'button' class = 'onePaper'>PAPER");
-    let pOneScissors = $("<button type = 'button' class = 'oneScissors'>SCISSORS");
+    let playerOneWin = false;
+    let playerTwoWin = false;
+
+    let pTwoRock = $("<button type = 'button' class = 'twoRock'>");
+    $(pTwoRock).text("ROCK");
+    let pTwoPaper = $("<button type = 'button' class = 'twoPaper'>");
+    $(pTwoPaper).text("PAPER");
+    let pTwoScissors = $("<button type = 'button' class = 'twoScissors'>");
+    $(pTwoScissors).text("SCISSORS");
 
     let playersFull = false;
+    let gameComplete = false;
 
-    let connectedRef = database.ref(".info/connected");
+    database.ref("turn/").remove();
 
 
     $(".submitName").on("click", function () {
@@ -47,6 +60,9 @@
                         }
                     })
                     playerTwoName = name;
+                    $(".playerTwoBox").append(pTwoRock);
+                    $(".playerTwoBox").append(pTwoPaper);
+                    $(".playerTwoBox").append(pTwoScissors);
                     database.ref("players/2/").onDisconnect().remove();
                 
             }
@@ -89,15 +105,154 @@
     })
 
     database.ref("players/").on("value", function(snapshot) {
-        if (snapshot.child("1/").exists() && snapshot.child("2/").exists()) {
+        if (snapshot.child("1/").exists() && snapshot.child("2/").exists() && playersFull === false) {
             database.ref().update({
                 turn: 1,
             })
+            playersFull = true;
             console.log("player one first turn");
             $(pOneRock).css("display", "inline-block");
             $(pOnePaper).css("display", "inline-block");
             $(pOneScissors).css("display", "inline-block");
+            
+            database.ref("turn/").once("value", function(snap) {
+                if (snap.val() == 1) {
+                    $(".oneRock").on("click", function() {
+                        database.ref("players/1").update({
+                            choice : "rock",
+                        })
+                        database.ref().update({
+                            turn : 2,
+                        })
+                        $(pOneRock).css("display", "none");
+                        $(pOnePaper).css("display", "none");
+                        $(pOneScissors).css("display", "none");
+                    })
+                    $(".onePaper").on("click", function() {
+                        database.ref("players/1").update({
+                            choice : "paper",
+                        })
+                        database.ref().update({
+                            turn : 2,
+                        })
+                        $(pOneRock).css("display", "none");
+                        $(pOnePaper).css("display", "none");
+                        $(pOneScissors).css("display", "none");
+                    })
+                    $(".oneScissors").on("click", function() {
+                        database.ref("players/1").update({
+                            choice : "scissors",
+                        })
+                        database.ref().update({
+                            turn : 2,
+                        })
+                        $(pOneRock).css("display", "none");
+                        $(pOnePaper).css("display", "none");
+                        $(pOneScissors).css("display", "none");
+                    })
+                }
+            })
         }
+        database.ref("turn/").on("value", function(snap) {
+            if (snap.val() == 2) {
+                $(pTwoRock).css("display", "inline-block");
+                $(pTwoPaper).css("display", "inline-block");
+                $(pTwoScissors).css("display", "inline-block");
+
+                $(".twoRock").on("click", function() {
+                    database.ref("players/2").update({
+                        choice : "rock",
+                    })
+                    database.ref().update({
+                        turn : 3,
+                    })
+                    $(pTwoRock).css("display", "none");
+                    $(pTwoPaper).css("display", "none");
+                    $(pTwoScissors).css("display", "none");
+                })
+
+                $(".twoPaper").on("click", function() {
+                    database.ref("players/2").update({
+                        choice : "paper",
+                    })
+                    database.ref().update({
+                        turn : 3,
+                    })
+                    $(pTwoRock).css("display", "none");
+                    $(pTwoPaper).css("display", "none");
+                    $(pTwoScissors).css("display", "none");
+                })
+
+                $(".twoScissors").on("click", function() {
+                    database.ref("players/2").update({
+                        choice : "scissors",
+                    })
+                    database.ref().update({
+                        turn : 3,
+                    })
+                    $(pTwoRock).css("display", "none");
+                    $(pTwoPaper).css("display", "none");
+                    $(pTwoScissors).css("display", "none");
+                })
+            }
+        })
+
+        database.ref("turn/").on("value", function(snap) {
+            if (snap.val() == 3 && gameComplete === false) {
+                database.ref("players/").once("value", function(snap) {
+                    if (snap.child("1/choice").val() === "rock" && snap.child("2/choice").val() === "scissors") {
+                        console.log("PLAYER ONE WINS");
+                        oneWins += 1;
+                        gameComplete = true;
+                        playerOneWin = true;
+                    } else if (snap.child("1/choice").val() === "rock" && snap.child("2/choice").val() === "paper") {
+                        console.log("PLAYER TWO WINS");
+                        twoWins += 1;
+                        gameComplete = true;
+                        playerTwoWin = true;
+                    } else if (snap.child("1/choice").val() === "rock" && snap.child("2/choice").val() === "rock") {
+                        console.log("TIE");
+                        gameComplete = true;
+                    } else if (snap.child("1/choice").val() === "paper" && snap.child("2/choice").val() === "scissors") {
+                        console.log("PLAYER TWO WINS");
+                        twoWins += 1;
+                        gameComplete = true;
+                        playerTwoWin = true;
+                    } else if (snap.child("1/choice").val() === "paper" && snap.child("2/choice").val() === "paper") {
+                        console.log("TIE");
+                        gameComplete = true;
+                    } else if (snap.child("1/choice").val() === "paper" && snap.child("2/choice").val() === "rock") {
+                        console.log("PLAYER ONE WINS");
+                        oneWins += 1;
+                        gameComplete = true;
+                        playerOneWin = true;
+                    } else if (snap.child("1/choice").val() === "scissors" && snap.child("2/choice").val() === "scissors") {
+                        console.log("TIE");
+                        gameComplete = true;
+                    } else if (snap.child("1/choice").val() === "scissors" && snap.child("2/choice").val() === "paper") {
+                        console.log("PLAYER ONE WINS");
+                        oneWins += 1;
+                        gameComplete = true;
+                        playerOneWin = true;
+                    } else if (snap.child("1/choice").val() === "scissors" && snap.child("2/choice").val() === "rock") {
+                        console.log("PLAYER TWO WINS");
+                        twoWins += 1;
+                        gameComplete = true;
+                        playerTwoWin = true;
+                    }
+                })
+            }
+            if (playerOneWin === true) {
+                database.ref("players/1").update({
+                    wins : oneWins,
+                })
+                playerOneWin = false;
+            } else if (playerTwoWin === true) {
+                database.ref("players/2").update({
+                    wins : twoWins,
+                })
+            }
+        })
     })
 
 
