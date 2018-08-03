@@ -39,3 +39,7 @@ form {
 #oneWin, #twoWin, #tie {
     display: none;
 }
+
+#oneWaiting, #twoWaiting {
+    display: none;
+}

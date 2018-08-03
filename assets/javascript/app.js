@@ -14,6 +14,8 @@
 
     let oneWins = 0;
     let twoWins = 0;
+    let oneLosses = 0;
+    let twoLosses = 0;
 
     let playerOneWin = false;
     let playerTwoWin = false;
@@ -29,7 +31,13 @@
     let gameComplete = false;
 
     database.ref("turn/").remove();
+    $(".middleBox").append("<h3 id = 'oneWaiting'>");
+    $("#oneWaiting").text("Waiting for Player One...")
+    $(".middleBox").append("<h3 id = 'twoWaiting'>");
+    $("#twoWaiting").text("Waiting for Player Two...");
 
+
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
 
     $(".submitName").on("click", function () {
         event.preventDefault();
@@ -113,10 +121,13 @@
             console.log("player one first turn");
             $(pOneRock).css("display", "inline-block");
             $(pOnePaper).css("display", "inline-block");
-            $(pOneScissors).css("display", "inline-block");
+
+
             
             database.ref("turn/").once("value", function(snap) {
                 if (snap.val() == 1) {
+                    $(pOneScissors).css("display", "inline-block");
+                    $("#oneWaiting").css("display", "inline-block");
                     $(".oneRock").on("click", function() {
                         database.ref("players/1").update({
                             choice : "rock",
@@ -127,6 +138,7 @@
                         $(pOneRock).css("display", "none");
                         $(pOnePaper).css("display", "none");
                         $(pOneScissors).css("display", "none");
+
                     })
                     $(".onePaper").on("click", function() {
                         database.ref("players/1").update({
@@ -138,6 +150,7 @@
                         $(pOneRock).css("display", "none");
                         $(pOnePaper).css("display", "none");
                         $(pOneScissors).css("display", "none");
+
                     })
                     $(".oneScissors").on("click", function() {
                         database.ref("players/1").update({
@@ -149,6 +162,7 @@
                         $(pOneRock).css("display", "none");
                         $(pOnePaper).css("display", "none");
                         $(pOneScissors).css("display", "none");
+
                     })
                 }
             })
@@ -158,6 +172,8 @@
                 $(pTwoRock).css("display", "inline-block");
                 $(pTwoPaper).css("display", "inline-block");
                 $(pTwoScissors).css("display", "inline-block");
+                $("#oneWaiting").detach();
+                $("#twoWaiting").css("display", "inline-block");
 
                 $(".twoRock").on("click", function() {
                     database.ref("players/2").update({
@@ -199,16 +215,19 @@
 
         database.ref("turn/").on("value", function(snap) {
             if (snap.val() == 3 && gameComplete === false) {
+                $("#twoWaiting").detach();
                 database.ref("players/").once("value", function(snap) {
                     if (snap.child("1/choice").val() === "rock" && snap.child("2/choice").val() === "scissors") {
                         console.log("PLAYER ONE WINS");
                         oneWins += 1;
+                        twoLosses += 1;
                         gameComplete = true;
                         playerOneWin = true;
                         $("#oneWin").css("display", "inline-block");
                     } else if (snap.child("1/choice").val() === "rock" && snap.child("2/choice").val() === "paper") {
                         console.log("PLAYER TWO WINS");
                         twoWins += 1;
+                        oneLosses += 1;
                         gameComplete = true;
                         playerTwoWin = true;
                         $("#twoWin").css("display", "inline-block");
@@ -219,6 +238,7 @@
                     } else if (snap.child("1/choice").val() === "paper" && snap.child("2/choice").val() === "scissors") {
                         console.log("PLAYER TWO WINS");
                         twoWins += 1;
+                        oneLosses += 1;
                         gameComplete = true;
                         playerTwoWin = true;
                         $("#twoWin").css("display", "inline-block");
@@ -229,6 +249,7 @@
                     } else if (snap.child("1/choice").val() === "paper" && snap.child("2/choice").val() === "rock") {
                         console.log("PLAYER ONE WINS");
                         oneWins += 1;
+                        twoLosses += 1;
                         gameComplete = true;
                         playerOneWin = true;
                         $("#oneWin").css("display", "inline-block");
@@ -239,12 +260,14 @@
                     } else if (snap.child("1/choice").val() === "scissors" && snap.child("2/choice").val() === "paper") {
                         console.log("PLAYER ONE WINS");
                         oneWins += 1;
+                        twoLosses += 1;
                         gameComplete = true;
                         playerOneWin = true;
                         $("#oneWin").css("display", "inline-block");
                     } else if (snap.child("1/choice").val() === "scissors" && snap.child("2/choice").val() === "rock") {
                         console.log("PLAYER TWO WINS");
                         twoWins += 1;
+                        oneLosses += 1;
                         gameComplete = true;
                         playerTwoWin = true;
                         $("#twoWin").css("display", "inline-block");
@@ -255,10 +278,17 @@
                 database.ref("players/1").update({
                     wins : oneWins,
                 })
+                database.ref("players/2").update({
+                    losses : twoLosses,
+                })
                 playerOneWin = false;
+
             } else if (playerTwoWin === true) {
                 database.ref("players/2").update({
                     wins : twoWins,
+                })
+                database.ref("players/1").update({
+                    losses : oneLosses,
                 })
             }
         })
