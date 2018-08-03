@@ -1,4 +1,17 @@
  $(document).ready(function() {
+
+    // WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
  
  
     let database = firebase.database();
@@ -11,6 +24,8 @@
     $(pOnePaper).text("PAPER");
     let pOneScissors = $("<button type = 'button' class = 'oneScissors'>");
     $(pOneScissors).text("SCISSORS");
+
+
 
     let oneWins = 0;
     let twoWins = 0;
@@ -45,86 +60,11 @@
     })
 
 
-// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
-// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
-// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
-// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
-// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
-// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
-
-    $(".submitName").on("click", function () {
-        event.preventDefault();
-
-        name = $("#userName").val().trim();
-
-        database.ref().once("value", function(snapshot) {
-            if (snapshot.child("players/1/").exists() == false) {
-                database.ref('players/').update({
-                        1 : {
-                            name : name,
-                            wins: 0,
-                            losses: 0,
-                        }
-                })
-                playerOneName = name;
-
-                $(".playerOneBox").append(pOneRock);
-                $(".playerOneBox").append(pOnePaper);
-                $(".playerOneBox").append(pOneScissors);
-                database.ref("players/1/").onDisconnect().remove();
-            } else {
-                database.ref('players/').update({
-                        2 : {
-                            name: name,
-                            wins: 0,
-                            losses: 0,
-                        }
-                    })
-                    playerTwoName = name;
-                    $(".playerTwoBox").append(pTwoRock);
-                    $(".playerTwoBox").append(pTwoPaper);
-                    $(".playerTwoBox").append(pTwoScissors);
-                    database.ref("players/2/").onDisconnect().remove();
-                
-            }
 
 
 
-        });
 
-        $("form").detach();
-
-    });
-    database.ref("players/1/name").on("value", function(snap) {
-        $("#playerOneName").text(snap.val());
-    });
-    database.ref("players/1/wins").on("value", function(snap) {
-        $("#playerOneWins").text(snap.val());
-    })
-    database.ref("players/1/losses").on("value", function(snap) {
-        $("#playerOneLosses").text(snap.val());
-    })
-    database.ref("players/2/name").on("value", function(snap) {
-        $("#playerTwoName").text(snap.val());
-    });
-    database.ref("players/2/wins").on("value", function(snap) {
-        $("#playerTwoWins").text(snap.val());
-    })
-    database.ref("players/2/losses").on("value", function(snap) {
-        $("#playerTwoLosses").text(snap.val());
-    })
-
-    database.ref().on("value", function(snapshot) {
-        if (snapshot.child("players/1/").exists() == false && snapshot.child("players/2/").exists() == false) {
-            $("#playerOneName").text("Waiting for Player One");
-            $("#playerTwoName").text("Waiting for Player Two");
-        } else if (snapshot.child("players/1/").exists() && snapshot.child("players/2/").exists() == false) {
-            $("#playerTwoName").text("Waiting for Player Two");
-        } else if (snapshot.child("players/1/").exists() == false && snapshot.child("players/2/").exists()) {
-            $("#playerOneName").text("Waiting for Player One");
-        };
-    })
-
+    function gameLogic() {
     database.ref("players/").on("value", function(snapshot) {
         if (snapshot.child("1/").exists() && snapshot.child("2/").exists() && playersFull === false) {
             database.ref().update({
@@ -293,28 +233,129 @@
                     }
                 })
             }
-            if (playerOneWin === true && playerTwoLoss === true) {
-                database.ref("players/1").update({
-                    wins : oneWins,
-                })
-                database.ref("players/2").update({
-                    losses : twoLosses,
-                })
-                playerOneWin = false;
-                playerTwoLoss = false;
 
-            } else if (playerTwoWin === true && playerOneLoss === true) {
-                database.ref("players/2").update({
-                    wins : twoWins,
-                })
-                database.ref("players/1").update({
-                    losses : oneLosses,
-                })
-                playerTwoWin = false;
-                playerOneLoss = false;
-            }
         })
     })
+    statCheck();      
+    }
+
+    function statCheck() {
+        if (playerOneWin === true && playerTwoLoss === true) {
+            database.ref("players/1").update({
+                wins : oneWins,
+            })
+            database.ref("players/2").update({
+                losses : twoLosses,
+            })
+            playerOneWin = false;
+            playerTwoLoss = false;
+            playersFull = false;
+
+            
+
+        } else if (playerTwoWin === true && playerOneLoss === true) {
+            database.ref("players/2").update({
+                wins : twoWins,
+            })
+            database.ref("players/1").update({
+                losses : oneLosses,
+            })
+            playerTwoWin = false;
+            playerOneLoss = false;
+            playersFull = false;
+        }
+
+
+    }
+
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+
+    $(".submitName").on("click", function () {
+        event.preventDefault();
+
+        name = $("#userName").val().trim();
+
+        database.ref().once("value", function(snapshot) {
+            if (snapshot.child("players/1/").exists() == false) {
+                database.ref('players/').update({
+                        1 : {
+                            name : name,
+                            wins: 0,
+                            losses: 0,
+                        }
+                })
+                playerOneName = name;
+
+                $(".playerOneBox").append(pOneRock);
+                $(".playerOneBox").append(pOnePaper);
+                $(".playerOneBox").append(pOneScissors);
+                database.ref("players/1/").onDisconnect().remove();
+            } else {
+                database.ref('players/').update({
+                        2 : {
+                            name: name,
+                            wins: 0,
+                            losses: 0,
+                        }
+                    })
+                    playerTwoName = name;
+                    $(".playerTwoBox").append(pTwoRock);
+                    $(".playerTwoBox").append(pTwoPaper);
+                    $(".playerTwoBox").append(pTwoScissors);
+                    database.ref("players/2/").onDisconnect().remove();
+                
+            }
+
+
+
+        });
+
+        $("form").detach();
+
+    });
+    database.ref("players/1/name").on("value", function(snap) {
+        $("#playerOneName").text(snap.val());
+    });
+    database.ref("players/1/wins").on("value", function(snap) {
+        $("#playerOneWins").text(snap.val());
+    })
+    database.ref("players/1/losses").on("value", function(snap) {
+        $("#playerOneLosses").text(snap.val());
+    })
+    database.ref("players/2/name").on("value", function(snap) {
+        $("#playerTwoName").text(snap.val());
+    });
+    database.ref("players/2/wins").on("value", function(snap) {
+        $("#playerTwoWins").text(snap.val());
+    })
+    database.ref("players/2/losses").on("value", function(snap) {
+        $("#playerTwoLosses").text(snap.val());
+    })
+
+    database.ref().on("value", function(snapshot) {
+        if (snapshot.child("players/1/").exists() == false && snapshot.child("players/2/").exists() == false) {
+            $("#playerOneName").text("Waiting for Player One");
+            $("#playerTwoName").text("Waiting for Player Two");
+        } else if (snapshot.child("players/1/").exists() && snapshot.child("players/2/").exists() == false) {
+            $("#playerTwoName").text("Waiting for Player Two");
+        } else if (snapshot.child("players/1/").exists() == false && snapshot.child("players/2/").exists()) {
+            $("#playerOneName").text("Waiting for Player One");
+        };
+    })
+
+
+
+    gameLogic();
+        
+    
+    
+
+
 
 
 
