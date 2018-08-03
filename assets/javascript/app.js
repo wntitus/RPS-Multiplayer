@@ -19,6 +19,8 @@
 
     let playerOneWin = false;
     let playerTwoWin = false;
+    let playerOneLoss = false;
+    let playerTwoLoss = false;
 
     let pTwoRock = $("<button type = 'button' class = 'twoRock'>");
     $(pTwoRock).text("ROCK");
@@ -36,7 +38,18 @@
     $(".middleBox").append("<h3 id = 'twoWaiting'>");
     $("#twoWaiting").text("Waiting for Player Two...");
 
+    database.ref("players/").once("value", function(snapshot) {
+        if (snapshot.child("/1").exists() && snapshot.child("/2").exists()) {
+            $("form").detach();
+        }
+    })
 
+
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
+// WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
 // WARNING!!!!! EXTREMELY WET CODE BELOW. WATCH YOUR STEP.
 
     $(".submitName").on("click", function () {
@@ -223,6 +236,7 @@
                         twoLosses += 1;
                         gameComplete = true;
                         playerOneWin = true;
+                        playerTwoLoss = true;
                         $("#oneWin").css("display", "inline-block");
                     } else if (snap.child("1/choice").val() === "rock" && snap.child("2/choice").val() === "paper") {
                         console.log("PLAYER TWO WINS");
@@ -230,6 +244,7 @@
                         oneLosses += 1;
                         gameComplete = true;
                         playerTwoWin = true;
+                        playerOneLoss = true;
                         $("#twoWin").css("display", "inline-block");
                     } else if (snap.child("1/choice").val() === "rock" && snap.child("2/choice").val() === "rock") {
                         console.log("TIE");
@@ -241,6 +256,7 @@
                         oneLosses += 1;
                         gameComplete = true;
                         playerTwoWin = true;
+                        playerOneLoss = true;
                         $("#twoWin").css("display", "inline-block");
                     } else if (snap.child("1/choice").val() === "paper" && snap.child("2/choice").val() === "paper") {
                         console.log("TIE");
@@ -252,6 +268,7 @@
                         twoLosses += 1;
                         gameComplete = true;
                         playerOneWin = true;
+                        playerTwoLoss = true;
                         $("#oneWin").css("display", "inline-block");
                     } else if (snap.child("1/choice").val() === "scissors" && snap.child("2/choice").val() === "scissors") {
                         console.log("TIE");
@@ -263,6 +280,7 @@
                         twoLosses += 1;
                         gameComplete = true;
                         playerOneWin = true;
+                        playerTwoLoss = true;
                         $("#oneWin").css("display", "inline-block");
                     } else if (snap.child("1/choice").val() === "scissors" && snap.child("2/choice").val() === "rock") {
                         console.log("PLAYER TWO WINS");
@@ -270,11 +288,12 @@
                         oneLosses += 1;
                         gameComplete = true;
                         playerTwoWin = true;
+                        playerOneLoss = true;
                         $("#twoWin").css("display", "inline-block");
                     }
                 })
             }
-            if (playerOneWin === true) {
+            if (playerOneWin === true && playerTwoLoss === true) {
                 database.ref("players/1").update({
                     wins : oneWins,
                 })
@@ -282,14 +301,17 @@
                     losses : twoLosses,
                 })
                 playerOneWin = false;
+                playerTwoLoss = false;
 
-            } else if (playerTwoWin === true) {
+            } else if (playerTwoWin === true && playerOneLoss === true) {
                 database.ref("players/2").update({
                     wins : twoWins,
                 })
                 database.ref("players/1").update({
                     losses : oneLosses,
                 })
+                playerTwoWin = false;
+                playerOneLoss = false;
             }
         })
     })
